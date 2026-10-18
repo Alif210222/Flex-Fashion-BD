@@ -18,6 +18,18 @@ const validate = (schema) => (req, res, next) => {
     return next(new AppError(message, 400));
   }
 
+  if (result.data.body) {
+    req.body = result.data.body;
+  }
+
+  if (result.data.params) {
+    req.validatedParams = result.data.params;
+  }
+
+  if (result.data.query) {
+    req.validatedQuery = result.data.query;
+  }
+
   next();
 };
 

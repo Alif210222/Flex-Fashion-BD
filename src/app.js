@@ -9,6 +9,7 @@ import {
   notFound,
   errorHandler,
 } from "./middlewares/error.middleware.js";
+import productRoutes from "./modules/product/product.route.js";
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.get("/api/v1/health", (req, res) => {
 });
 
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/products", productRoutes)
 
 // error handlers 
 app.use(notFound);
