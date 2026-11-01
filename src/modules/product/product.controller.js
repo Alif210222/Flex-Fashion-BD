@@ -68,6 +68,27 @@ export const getProduct = catchAsync(async (req, res) => {
   });
 });
 
+
+
+export const getProductBySlug = async (req, res, next) => {
+  try {
+    const { slug } = req.params;
+
+    console.log("Controller slug:", slug);
+    console.log("Controller slug type:", typeof slug);
+
+    const product = await productService.getProductBySlug(slug);
+
+    return res.status(200).json({
+      success: true,
+      message: "Product retrieved successfully",
+      data: { product },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAdminProduct = catchAsync(async (req, res) => {
   const { id } = req.params;
 

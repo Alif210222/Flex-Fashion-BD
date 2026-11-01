@@ -21,6 +21,15 @@ const variantSchema = z.object({
 
 const productFields = {
   name: z.string().trim().min(3).max(160),
+  slug: z
+    .string()
+    .trim()
+    .min(3, "Slug must be at least 3 characters")
+    .max(180, "Slug cannot exceed 180 characters")
+    .regex(
+      /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+      "Slug must contain lowercase letters, numbers, and hyphens only"
+    ),
   description: z.string().trim().min(10).max(5000),
   brand: z.string().trim().max(100).optional(),
   category: z.enum([

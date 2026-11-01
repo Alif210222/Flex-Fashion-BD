@@ -8,6 +8,7 @@ import {
   getAdminProduct,
   updateProduct,
   deleteProduct,
+  getProductBySlug
 } from "./product.controller.js";
 
 import {
@@ -24,6 +25,7 @@ import {
   protect,
   restrictTo,
 } from "../../middlewares/auth.middleware.js";
+
 
 const router = Router();
 
@@ -46,6 +48,7 @@ router.get(
   getAdminProduct
 );
 
+router.get("/slug/:slug",getProductBySlug)
 
 router.get("/:id", getProduct);
 

@@ -204,9 +204,17 @@ const getProductById = async (id, isAdmin = false) => {
 };
 
 const getProductBySlug = async (slug, isAdmin = false) => {
+
+console.log("Requested slug:", slug);
+console.log("Slug type:", typeof slug);
+
+
   const product = await Product.findOne({ slug })
     .select("-costPrice")
     .lean();
+
+     console.log("Found product:", product?._id ?? null);
+  console.log("Product status:", product?.status);
 
   if (!product || (!isAdmin && product.status !== "active")) {
     throw new AppError("Product not found", 404);

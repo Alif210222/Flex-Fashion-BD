@@ -30,6 +30,13 @@ export const createOrderSchema = z.object({
       )
       .min(1)
       .max(20),
+      // Delivery location
+    deliveryLocation: z.enum(
+      ["inside-dhaka", "outside-dhaka"],
+      {
+        message: "Please select a valid delivery location",
+      }
+    ),
     shippingAddress: addressSchema,
   }),
 });
