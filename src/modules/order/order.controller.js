@@ -2,11 +2,22 @@
 import catchAsync from "../../utils/catchAsync.js";
 import * as orderService from "./order.service.js";
 
+
 export const createOrder = catchAsync(async (req, res) => {
-  const order = await orderService.createOrder(
-    req.user._id,
-    req.body
-  );
+const customerId = req.user?._id ?? null;
+const order = await orderService.createOrder(customerId, req.body);
+
+  // Guest receives only an order reference.
+  // Registered customers receive their order data.
+  if (!customerId) {
+    return res.status(201).json({
+      success: true,
+      message: "Order placed successfully.",
+      data: {
+        orderNumber: order.orderNumber,
+      },
+    });
+  }
 
   res.status(201).json({
     success: true,
@@ -14,6 +25,7 @@ export const createOrder = catchAsync(async (req, res) => {
     data: { order },
   });
 });
+
 
 export const getMyOrders = catchAsync(async (req, res) => {
   const result = await orderService.getMyOrders(

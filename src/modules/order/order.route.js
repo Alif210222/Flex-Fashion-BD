@@ -1,5 +1,6 @@
 
 import { Router } from "express";
+
 import {
   createOrder,
   getMyOrders,
@@ -10,8 +11,13 @@ import {
   updateOrderStatus,
 } from "./order.controller.js";
 
-import { protect, restrictTo } from "../../middlewares/auth.middleware.js";
-import  validate  from "../../middlewares/validate.middleware.js";
+import {
+  protect,
+  optionalProtect,
+  restrictTo,
+} from "../../middlewares/auth.middleware.js";
+
+import validate from "../../middlewares/validate.middleware.js";
 
 import {
   createOrderSchema,
@@ -22,22 +28,40 @@ import {
 
 const router = Router();
 
-// Every order route requires login.
-router.use(protect);
+// Guest + logged-in customer checkout
+router.post(
+  "/",
+  optionalProtect,
+  validate(createOrderSchema),
+  createOrder
+);
 
-// Customer routes
-router.post("/", validate(createOrderSchema), createOrder);
-router.get("/my-orders", validate(orderQuerySchema), getMyOrders);
-router.get("/my-orders/:id", validate(orderIdSchema), getMyOrderById);
+// Customer routes - login required
+router.get(
+  "/my-orders",
+  protect,
+  validate(orderQuerySchema),
+  getMyOrders
+);
+
+router.get(
+  "/my-orders/:id",
+  protect,
+  validate(orderIdSchema),
+  getMyOrderById
+);
+
 router.patch(
   "/my-orders/:id/cancel",
+  protect,
   validate(orderIdSchema),
   cancelMyOrder
 );
 
-// Admin routes
+// Admin routes - login + admin role required
 router.get(
   "/admin/all",
+  protect,
   restrictTo("admin"),
   validate(orderQuerySchema),
   getAllOrders
@@ -45,6 +69,7 @@ router.get(
 
 router.get(
   "/admin/:id",
+  protect,
   restrictTo("admin"),
   validate(orderIdSchema),
   getAdminOrderById
@@ -52,6 +77,7 @@ router.get(
 
 router.patch(
   "/admin/:id/status",
+  protect,
   restrictTo("admin"),
   validate(updateOrderStatusSchema),
   updateOrderStatus
